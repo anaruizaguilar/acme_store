@@ -53,7 +53,7 @@ const createFavorite = async( user_id, product_id ) => {
     VALUES($1, $2, $3)
     RETURNING *
     `;
-    const response = await client.query(SQL [uuid.v4(), user_id, product_id]);
+    const response = await client.query(SQL, [uuid.v4(), user_id, product_id]);
     return response.rows[0];
 };
 
