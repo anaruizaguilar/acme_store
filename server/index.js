@@ -27,9 +27,9 @@ app.get('/api/users/:id/favorites', async(req, res, next) => {
     }
 });
 
-app.post('/api/users/:id/favorites', async(req, res, next) => {
-    const { user_id } = req.params.id;
-    const { product_id } = req.body;
+app.post('/api/users/:userId/favorites/:productId', async(req, res, next) => {
+    const  product_id  = req.params.productId;
+    const  user_id  = req.params.userId;
     try {
         res.status(201).send(await createFavorite(user_id, product_id));
     } catch(ex) {
@@ -37,11 +37,13 @@ app.post('/api/users/:id/favorites', async(req, res, next) => {
     }
 });
 
-app.delete('/api/users/:userId/favorites/:id', async(req, res, next) => {
-    const { id } = req.params.id;
-    const { user_id } = req.params.userId;
+app.delete('/api/users/:userId/favorites/:productId', async(req, res, next) => {
+    const  product_id  = req.params.productId;
+    const  user_id  = req.params.userId;
     try {
-        await destroyFavorite(id, user_id);
+        console.log(product_id);
+        console.log(user_id);
+        await destroyFavorite(user_id, product_id);
         res.sendStatus(204);
     } catch(ex) {
         next(ex);
@@ -58,7 +60,7 @@ const init = async() => {
         createUser('mavis', 'canUk33pIt'),
         createUser('agnes', 'this1ullsav3'),
         createProduct('toaster'),
-        createProduct('tumber'),
+        createProduct('tumbler'),
         createProduct('socks'),
         createProduct('puzzle')
     ]);
@@ -70,14 +72,14 @@ const init = async() => {
 
     const favorites = await Promise.all([
         createFavorite(allie.id, puzzle.id),
-    //     createFavorite(mavis.id, tumbler.id),
-    //     createFavorite(agnes.id, toaster.id),
-    //     createFavorite(mavis.id, socks.id)
+        createFavorite(mavis.id, tumbler.id),
+        createFavorite(agnes.id, toaster.id),
+        createFavorite(mavis.id, socks.id)
      ]);
 
-    //  //console.log(await fetchFavorites(allie.id));
-    // // await destroyFavorite(favorites[0].id);
-    // // console.log(await fetchFavorites(allie.id));
+    console.log(await fetchFavorites(allie.id));
+    // await destroyFavorite(favorites[0].id);
+    // console.log(await fetchFavorites(allie.id));
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => console.log(`listening in port ${PORT}`));

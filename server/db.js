@@ -75,19 +75,21 @@ const fetchProducts = async() => {
 
 const fetchFavorites = async(id) => {
     const SQL = `
-    SELECT * FROM favorites
-    WHERE user_id = $1
+    SELECT products.name
+    FROM favorites
+    JOIN products ON favorites.product_id = products.id
+    WHERE favorites.user_id = $1;
     `;
     const response = await client.query(SQL, [ id ]);
     return response.rows;
 }
 
-const destroyFavorite = async(id, user_id) => {
+const destroyFavorite = async(product_id, user_id) => {
     const SQL = `
     DELETE FROM favorites
-    WHERE id = $1 AND user_id = $2
+    WHERE product_id = $1 AND user_id = $2
     `;
-    await client.query(SQL, [id, user_id]);
+    await client.query(SQL, [product_id, user_id]);
 };
 
 module.exports = {
